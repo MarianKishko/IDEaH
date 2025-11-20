@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Custom\UserControl\tyrone.png" />
+    <None Remove="Custom\UserControl\X--Streamline-Bootstrap.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Custom\UserControl\tyrone.png" />
+    <Resource Include="img\X--Streamline-Bootstrap.png" />
+  </ItemGroup>
+
+</Project>

@@ -19,5 +19,4 @@ D:\MyProgramProjects\IDEaHTest1\IDEaHTest1\obj\Debug\net8.0-windows\IDEaHTest1.p
 D:\MyProgramProjects\IDEaHTest1\IDEaHTest1\obj\Debug\net8.0-windows\IDEaHTest1.genruntimeconfig.cache
 D:\MyProgramProjects\IDEaHTest1\IDEaHTest1\obj\Debug\net8.0-windows\ref\IDEaHTest1.dll
 D:\MyProgramProjects\IDEaHTest1\IDEaHTest1\obj\Debug\net8.0-windows\Custom\UserControl\FileTab.g.cs
-D:\MyProgramProjects\IDEaHTest1\IDEaHTest1\obj\Debug\net8.0-windows\GeneratedInternalTypeHelper.g.cs
 D:\MyProgramProjects\IDEaHTest1\IDEaHTest1\obj\Debug\net8.0-windows\Custom\UserControl\FileTab.baml

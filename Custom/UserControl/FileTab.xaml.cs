@@ -22,10 +22,13 @@ namespace IDEaHTest1.Custom.UserControl
     
     public partial class FileTab
     {
+        private const string defaultNewName = "New File";
+
         private MainWindow _main;
         private string _filePath = "";
         
         private List<string> _changes = new List<string>();
+        private int _currentIndex;
        
         private string _fileName; 
 
@@ -35,20 +38,24 @@ namespace IDEaHTest1.Custom.UserControl
         {
             InitializeComponent();
 
+            //_main = main;
             _filePath = "";
             _changes.Add("");
-            _fileName = "New File";
+            _fileName = defaultNewName;
             SetTabsName();
+            _currentIndex = 0;
         }
 
         public FileTab(string filePath, string content, string fileName)
         {
             InitializeComponent();
 
+            //_main = main;
             _filePath = filePath;
             _changes.Add(content);
             _fileName = fileName;
             SetTabsName();
+            _currentIndex = 0;
         }
 
         private void CloseBtn_Click(object sender, RoutedEventArgs e)
@@ -89,11 +96,45 @@ namespace IDEaHTest1.Custom.UserControl
         public void GetChanges(string newChange)
         {
             _changes.Add(newChange);
+            _currentIndex = _changes.Count - 1;
         }
 
         public void SetChosen()
         {
             _main.ChooseNewTab(this);
+        }
+
+        public bool IsNew()
+        {
+            return _fileName == defaultNewName;
+        }
+
+        public void SetNewName(string name)
+        {
+            _fileName = name;
+            SetTabsName();
+        }
+
+        public void Undo()
+        {
+            _currentIndex--;
+            _main.ChangeText(_changes[_currentIndex]);
+        }
+
+        public void Redo() 
+        {
+            _currentIndex++;
+            _main.ChangeText(_changes[_currentIndex]);
+        }
+
+        public bool IsMinLimitAchived()
+        {
+            return _currentIndex > 0;
+        }
+
+        public bool IsMaxLimitAchived()
+        {
+            return _currentIndex < _changes.Count - 1;
         }
     }
 }

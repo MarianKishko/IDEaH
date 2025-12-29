@@ -6,11 +6,11 @@
              xmlns:local="clr-namespace:IDEaHTest1.Custom.UserControl"
              mc:Ignorable="d" Height="35" Width="110">
     <Grid>
-        <Button x:Name="Main" Click="Main_Click">
+        <Button x:Name="Main" Click="Main_Click" Background="#FF3F4250" Foreground="#FFF0F0F0">
             <StackPanel Orientation="Horizontal" x:Name="Panel" HorizontalAlignment="Stretch">
                 <Image Source="/Custom/UserControl/tyrone.png" Height="21" Width="15" x:Name="Icon"/>
-                <TextBlock Text="New Text"  Margin="3, 0, 5, 0" Height="16" x:Name="Name"></TextBlock>
-                <Button BorderBrush="{x:Null}" Background="{x:Null}" Content="X" x:Name="CloseBtn" Click="CloseBtn_Click"/>
+                <TextBlock Text="New Text"  Margin="4, 0, 9, 0" Height="16" x:Name="Name"></TextBlock>
+                <Button BorderBrush="{x:Null}" Background="{x:Null}" Content="X" x:Name="CloseBtn" Click="CloseBtn_Click" Foreground="#FFF0F0F0" FontSize="16"/>
             </StackPanel>
         </Button>
     </Grid>

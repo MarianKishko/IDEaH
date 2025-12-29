@@ -18,8 +18,33 @@ namespace IDEaHTest1
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     
+    public static class FileExtensions
+    {
+        public static readonly FileExtension Text = new FileExtension(".txt", "Text");
+        
+        public static readonly FileExtension C = new FileExtension(".c", "C");
+        public static readonly FileExtension Python = new FileExtension(".py", "Python");
+        public static readonly FileExtension Java = new FileExtension(".java", "Java");
+        public static readonly FileExtension JS = new FileExtension(".js", "JS");
+
+        // Their names are backwards to solve the bug that makes TypeOfFile Lable show them in reverse (the symbols are the first characters, then C is the last)
+        public static readonly FileExtension CSharp = new FileExtension(".cs", "#C");
+        public static readonly FileExtension Cpp = new FileExtension(".cpp", "++C");
+    }
+
     public partial class MainWindow : Window
     {
+        private FileExtension[] _extensions =
+        [
+            FileExtensions.Text,
+            FileExtensions.CSharp,
+            FileExtensions.Cpp,
+            FileExtensions.C,
+            FileExtensions.Python,
+            FileExtensions.Java,
+            FileExtensions.JS
+            ];
+
         private const string EMPTY = "";
 
         private List<FileTab> _fileTabs = new List<FileTab>();
@@ -28,17 +53,19 @@ namespace IDEaHTest1
         public MainWindow()
         {
             InitializeComponent();
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            
+            this.PreviewKeyUp += SaveChanges;
         }
 
         public void RemoveFileTab(FileTab tab)
         {
             tab.UpdateMainWindow(this);
             _fileTabs.Remove(tab);
+
+            if (_fileTabs.Count > 1) 
+            {
+                _chosenTab = _fileTabs.Last();
+                _chosenTab.SetChosen();
+            }
         }
 
         public void DisableTextEditor()
@@ -60,6 +87,7 @@ namespace IDEaHTest1
             Tabs.Children.Add(newFile);
 
             newFile.SetChosen();
+            //ChangeTypeOfFileLableText(FileExtensions.Text.Name);
 
             TurnTextEditor(true);
         }
@@ -74,6 +102,8 @@ namespace IDEaHTest1
 
             newFile.SetChosen();
 
+            //ChangeTypeOfFileLableText(GetFileExtensionName());
+
             TurnTextEditor(true);
         }
 
@@ -85,13 +115,18 @@ namespace IDEaHTest1
         public void ChooseNewTab(FileTab newChosen)
         {
             _chosenTab = newChosen;
-            textEditor.Text = newChosen.GetFileText();
+            ChangeText(newChosen.GetFileText());
+
+            if (newChosen.FilePath == "")
+                ChangeTypeOfFileLableText(FileExtensions.Text.Name);
+            else
+                ChangeTypeOfFileLableText(GetFileExtensionName());
         }
 
         private void UpdateChosensData(string filePath) 
         {
             _chosenTab.SetFilePath(filePath);
-            //_chosenTab.SetTabName(GetOnlyFileName(filePath));
+            _chosenTab.SetNewName(GetOnlyFileName(filePath));
         }
 
         private void TurnTextEditor(bool off)
@@ -143,20 +178,108 @@ namespace IDEaHTest1
         {
             if (textEditor.IsEnabled)
             {
-                SaveFileDialog saveFileDialog = new SaveFileDialog();
-                if (saveFileDialog.ShowDialog() == true)
+                if (_chosenTab.IsNew())
                 {
-                    File.WriteAllText(saveFileDialog.FileName, textEditor.Text);
+                    SaveFileDialog saveFileDialog = new SaveFileDialog();
 
-                    UpdateChosensData(saveFileDialog.FileName);
+                    //saveFileDialog.Filter = "Text file (*.txt)|*.txt|C# file (*.cs)|*.cs";
+
+                    if (saveFileDialog.ShowDialog() == true)
+                    {
+                        File.WriteAllText(saveFileDialog.FileName, textEditor.Text);
+
+                        ChangeTypeOfFileLableText(GetFileExtensionName());
+
+                        UpdateChosensData(saveFileDialog.FileName);
+                    }
                 }
+                else
+                    File.WriteAllText(_chosenTab.FilePath, textEditor.Text);
             }
-            
         }
 
-        private void textEditor_TextChanged(object sender, TextChangedEventArgs e)
+        private void SaveChanges(object sender, KeyEventArgs e)
         {
-            _chosenTab.GetChanges(textEditor.Text);
+            if (!IsControlKey(e.Key))
+            {
+                _chosenTab.GetChanges(textEditor.Text);
+            }
+        }
+
+        private bool IsControlKey(Key key)
+        {
+            return key == Key.Tab ||
+                      key == Key.Escape ||
+                      key == Key.LeftShift || key == Key.RightShift ||
+                      key == Key.LeftCtrl || key == Key.RightCtrl ||
+                      key == Key.LeftAlt || key == Key.RightAlt ||
+                      (key >= Key.F1 && key <= Key.F24);
+        }
+
+        public void ChangeText(string content)
+        {
+            textEditor.Text = content;
+        }
+
+        private void Undo(object sender, RoutedEventArgs e)
+        {
+            if (_chosenTab.IsMinLimitAchived())
+                _chosenTab.Undo();
+        }
+
+        private void Redo(object sender, RoutedEventArgs e)
+        {
+            if (_chosenTab.IsMaxLimitAchived())
+                _chosenTab.Redo();
+        }
+
+        private string GetFileExtensionName()
+        {
+            string extension = System.IO.Path.GetExtension(_chosenTab.FilePath);
+            string extensionName = "";
+
+            for (int i = 0; i < _extensions.Length; i++) 
+                if (extension == _extensions[i].Extension)
+                {
+                    extensionName = _extensions[i].Name;
+                    break;
+                }
+
+            return extensionName;
+        }
+
+        private void ChangeTypeOfFileLableText(string newType)
+        {
+            TypeOfFile.Content = newType;
+        }
+
+        private int BinarySearch(int[] array, int target, int low, int high)
+        {
+            while (low <= high)
+            {
+                int mid = low + (high - low) / 2;
+
+                if (array[mid] == target)
+                    return mid;
+
+                if (array[mid] < target)
+                    low = mid + 1;
+                else
+                    high = mid - 1;
+            }
+            return -1;
+        }
+
+        private void textEditor_SelectionChanged(object sender, RoutedEventArgs e)
+        {
+            int caretPosition = textEditor.SelectionStart;
+            int x = textEditor.GetLineIndexFromCharacterIndex(caretPosition);
+            int y = caretPosition - textEditor.GetLineIndexFromCharacterIndex(x);
+
+            CountOfLns.Content = "Ln: " + x;
+            CountOfChs.Content = "Ch: " + y;
         }
     }
+
+    
 }

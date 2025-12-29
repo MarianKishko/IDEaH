@@ -9,6 +9,7 @@
         Title="MainWindow" Height="720" Width="1280"
         WindowStyle="None" 
         ResizeMode="CanResize"
+        Focusable="True"
         >
 
     <!-- To make my window borderless to have my own panel 
@@ -83,7 +84,10 @@
                 <MenuItem Header="Exit" Style="{StaticResource SubMenuItem}"></MenuItem>
             </MenuItem>
             <MenuItem Header="View"></MenuItem>
-            <MenuItem Header="Edit"></MenuItem>
+            <MenuItem Header="Edit">
+                <MenuItem Header="Undo" Style="{StaticResource SubMenuItem}" Click="Undo"></MenuItem>
+                <MenuItem Header="Redo" Style="{StaticResource SubMenuItem}" Click="Redo"></MenuItem>
+            </MenuItem>
             <MenuItem Header="Help"></MenuItem>
         </Menu>
 
@@ -96,7 +100,7 @@
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <!-- File manager - You can search the files -->
+            <!-- File manager - You can search the files in your chosen folder -->
 
             <!--<TreeView Grid.Column="0" BorderBrush="{x:Null}" Background="#FF373A4C" Foreground="#FFF0F0F0">
                 <TreeViewItem Header="Head" Style="{StaticResource TreeViewItem}">
@@ -115,7 +119,9 @@
                      AcceptsReturn="True" 
                      AcceptsTab="True"
                      Style="{StaticResource TextBox}" BorderBrush="{x:Null}" Margin="0,35,0,0"
-                     IsEnabled="False" TextChanged="textEditor_TextChanged"
+                     IsEnabled="False" 
+                     SelectionChanged="textEditor_SelectionChanged"
+                     
                      />
 
             <Rectangle Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="28" Fill="#FF555867"></Rectangle>
@@ -123,8 +129,14 @@
             <!-- Tabs of the files you working with -->
 
             <StackPanel x:Name="Tabs" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Top">
-                
+
             </StackPanel>
+
+            <!-- The bottom of the window where it shows the current position of the caret (the cursor in the text editor) and the type of the file (tab) you are currently working with -->
+            
+            <Label x:Name="CountOfLns" Content="Ln: " HorizontalAlignment="Left"  VerticalAlignment="Bottom" Grid.Column="2" Foreground="#FFF0F0F0" Width="55"/>
+            <Label x:Name="CountOfChs" Content="Ch: " HorizontalAlignment="Left"  VerticalAlignment="Bottom" Grid.Column="2" Foreground="#FFF0F0F0" Width="55" Margin="60,0,0,0"/>
+            <Label x:Name="TypeOfFile" Content=""   Grid.Column="2" Foreground="#FFF0F0F0" Width="127" VerticalAlignment="Bottom" HorizontalAlignment="Right" FlowDirection="RightToLeft"/>
 
         </Grid>
 

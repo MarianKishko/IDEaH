@@ -38,7 +38,6 @@ namespace IDEaHTest1.Custom.UserControl
         {
             InitializeComponent();
 
-            //_main = main;
             _filePath = "";
             _changes.Add("");
             _fileName = defaultNewName;
@@ -50,7 +49,6 @@ namespace IDEaHTest1.Custom.UserControl
         {
             InitializeComponent();
 
-            //_main = main;
             _filePath = filePath;
             _changes.Add(content);
             _fileName = fileName;
